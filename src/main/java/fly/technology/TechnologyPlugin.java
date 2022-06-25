@@ -3,10 +3,9 @@ package fly.technology;
 import fly.newmod.NewMod;
 import fly.technology.blocks.data.EnergyHolderBlockDataImpl;
 import fly.technology.setup.TechnologyAddonSetup;
-import org.bukkit.plugin.java.JavaPlugin;
 
 public class TechnologyPlugin extends NewMod.ModExtension {
-    private static TechnologyPlugin INSTANCE = new TechnologyPlugin();
+    private static TechnologyPlugin INSTANCE = null;
 
     public TechnologyPlugin() {
         INSTANCE = this;
