@@ -3,3 +3,7 @@ main: fly.technology.TechnologyPlugin
 version: Beta-1.0
 api-version: 1.13
 depend: [Mods, MetalsModule]
+
+commands:
+  aaaa:
+    description: "lmao"

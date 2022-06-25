@@ -1,24 +1,25 @@
 package fly.technology;
 
-import fly.metals.MetalsPlugin;
 import fly.newmod.NewMod;
+import fly.technology.blocks.data.EnergyHolderBlockDataImpl;
 import fly.technology.setup.TechnologyAddonSetup;
-
-import java.util.ArrayList;
-import java.util.List;
+import org.bukkit.plugin.java.JavaPlugin;
 
 public class TechnologyPlugin extends NewMod.ModExtension {
-    @Override
-    public void load() {
-        TechnologyAddonSetup.init();
+    private static TechnologyPlugin INSTANCE = new TechnologyPlugin();
+
+    public TechnologyPlugin() {
+        INSTANCE = this;
+    }
+
+    public static TechnologyPlugin get() {
+        return INSTANCE;
     }
 
     @Override
-    public List<NewMod.ModExtension> requirements() {
-        ArrayList<NewMod.ModExtension> list = new ArrayList<>();
+    public void load() {
+        TechnologyAddonSetup.init();
 
-        list.add(MetalsPlugin.getPlugin(MetalsPlugin.class));
-
-        return list;
+        new EnergyHolderBlockDataImpl.EnergyHoldBlockDataSerializer();
     }
 }
