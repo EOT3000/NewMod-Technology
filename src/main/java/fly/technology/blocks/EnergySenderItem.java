@@ -10,6 +10,7 @@ import fly.newmod.api.item.type.ModItemType;
 import fly.newmod.utils.BlockUtils;
 import fly.technology.TechnologyPlugin;
 import fly.technology.blocks.data.EnergyHolderBlockData;
+import fly.technology.blocks.data.EnergyHolderBlockDataImpl;
 import fly.technology.setup.TechnologyAddonSetup;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -32,7 +33,7 @@ public class EnergySenderItem extends ModItemType {
 
     public static class EnergySenderBlock extends ModBlockType implements EnergyComponent {
         public EnergySenderBlock() {
-            super(Material.REDSTONE_LAMP, new NamespacedKey(TechnologyPlugin.get(), "energy_sender"));
+            super(Material.TARGET, new NamespacedKey(TechnologyPlugin.get(), "energy_sender"), EnergyHolderBlockDataImpl.class);
         }
 
         @Override
@@ -73,7 +74,7 @@ public class EnergySenderItem extends ModItemType {
         }
 
         private ModBlock end(Location node, Location wire, int length) {
-            Vector direction = node.toVector().subtract(wire.toVector());
+            Vector direction = wire.toVector().subtract(node.toVector());
 
             return end0(direction, wire, length);
         }

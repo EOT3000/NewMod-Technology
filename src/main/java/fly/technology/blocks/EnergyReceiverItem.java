@@ -14,7 +14,7 @@ public class EnergyReceiverItem extends ModItemType {
 
         name("Energy Receiver", 0xFF8060);
 
-        setBlock(new EnergyManagerItem.EnergyManagerBlock());
+        setBlock(new EnergyReceiverBlock());
 
         NewMod.get().getItemManager().registerItem(this);
         NewMod.get().getBlockManager().registerBlock(getBlock());
@@ -22,7 +22,7 @@ public class EnergyReceiverItem extends ModItemType {
 
     public static class EnergyReceiverBlock extends ModBlockType implements EnergyComponent {
         public EnergyReceiverBlock() {
-            super(Material.REDSTONE_LAMP, new NamespacedKey(TechnologyPlugin.get(), "energy_receiver"), EnergyHolderBlockDataImpl.class);
+            super(Material.TARGET, new NamespacedKey(TechnologyPlugin.get(), "energy_receiver"), EnergyHolderBlockDataImpl.class);
         }
 
         @Override

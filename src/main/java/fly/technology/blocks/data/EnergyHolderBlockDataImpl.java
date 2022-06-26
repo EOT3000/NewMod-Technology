@@ -5,6 +5,7 @@ import fly.newmod.api.block.BlockManager;
 import fly.newmod.api.block.data.ModBlockData;
 import fly.newmod.api.block.data.ModBlockDataSerializer;
 import fly.newmod.api.block.type.ModBlockType;
+import fly.newmod.utils.PersistentDataUtils;
 import fly.technology.blocks.EnergyComponent;
 
 import java.util.Map;
@@ -14,13 +15,6 @@ public class EnergyHolderBlockDataImpl extends ModBlockData.AbstractModBlockData
     private int capacity;
 
     protected EnergyHolderBlockDataImpl(ModBlockType type, int charge, int capacity) {
-        super(type);
-
-        this.charge = charge;
-        this.capacity = capacity;
-    }
-
-    protected EnergyHolderBlockDataImpl(ModBlockType type, int charge, int capacity, int demand) {
         super(type);
 
         this.charge = charge;
@@ -61,6 +55,14 @@ public class EnergyHolderBlockDataImpl extends ModBlockData.AbstractModBlockData
         this.capacity = capacity;
     }
 
+    @Override
+    public String toString() {
+        return "EnergyHolderBlockDataImpl{" +
+                "charge=" + charge +
+                ", capacity=" + capacity +
+                '}';
+    }
+
     public static class EnergyHoldBlockDataSerializer extends ModBlockDataSerializer<EnergyHolderBlockDataImpl> {
         public EnergyHoldBlockDataSerializer() {
             super(EnergyHolderBlockDataImpl.class);
@@ -90,6 +92,10 @@ public class EnergyHolderBlockDataImpl extends ModBlockData.AbstractModBlockData
 
         @Override
         public boolean applyData(Map<String, String> map, EnergyHolderBlockDataImpl energyHolderBlockData) {
+            map.put("charge", energyHolderBlockData.charge + "");
+            map.put("capacity", energyHolderBlockData.capacity + "");
+            map.put("id", PersistentDataUtils.NAMESPACED_KEY.toPrimitive(energyHolderBlockData.getType().getId(), null));
+
             return false;
         }
     }
