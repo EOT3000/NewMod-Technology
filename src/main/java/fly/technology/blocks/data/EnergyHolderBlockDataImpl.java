@@ -46,6 +46,15 @@ public class EnergyHolderBlockDataImpl extends ModBlockData.AbstractModBlockData
     }
 
     @Override
+    public int removeCharge(int chargeRem) {
+        int oldCharge = charge;
+
+        charge = Math.max(charge-chargeRem, 0);
+
+        return chargeRem+(charge-oldCharge);
+    }
+
+    @Override
     public int getCapacity() {
         return capacity;
     }

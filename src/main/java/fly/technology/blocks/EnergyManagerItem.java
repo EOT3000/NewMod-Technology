@@ -17,6 +17,8 @@ import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ShapedRecipe;
 
+import java.util.List;
+
 public class EnergyManagerItem extends ModItemType {
     public EnergyManagerItem() {
         super(Material.REDSTONE_LAMP, new NamespacedKey(TechnologyPlugin.get(), "energy_manager"));
@@ -59,32 +61,66 @@ public class EnergyManagerItem extends ModItemType {
     public static class EnergyManagerListener implements BlockEventsListener {
         @Override
         public void onBlockTick(ModBlockTickEvent event) {
-            ModBlock receiver = BlockUtils.getAllBlocks(
+            List<ModBlock> receivers = BlockUtils.getAllBlocks(
                     (x) -> x instanceof EnergyComponent && ((EnergyComponent) x).getType().equals(EnergyComponent.EnergyComponentType.RECEIVER)
-                    , event.getBlock().getLocation(), true).get(0);
+                    , event.getBlock().getLocation(), true);
 
-            ModBlock sender = BlockUtils.getAllBlocks(
+            List<ModBlock> senders = BlockUtils.getAllBlocks(
                     (x) -> x instanceof EnergyComponent && ((EnergyComponent) x).getType().equals(EnergyComponent.EnergyComponentType.SENDER)
-                    , event.getBlock().getLocation(), true).get(0);
+                    , event.getBlock().getLocation(), true);
 
             ModBlock b = event.getModBlock();
 
-            EnergyHolderBlockData r = (EnergyHolderBlockData) receiver.getData();
-            EnergyHolderBlockData s = (EnergyHolderBlockData) sender.getData();
-            EnergyHolderBlockData m = (EnergyHolderBlockData) b.getData();
+            if(receivers.size() == 1) {
+                if(senders.size() == 1) {
+                    ModBlock receiver = receivers.get(0);
+                    ModBlock sender = senders.get(0);
 
-            r.setCharge(m.addCharge(s.addCharge(r.getCharge())));
+                    EnergyHolderBlockData r = (EnergyHolderBlockData) receiver.getData();
+                    EnergyHolderBlockData s = (EnergyHolderBlockData) sender.getData();
+                    EnergyHolderBlockData m = (EnergyHolderBlockData) b.getData();
 
-            m.setCharge(s.addCharge(m.getCharge()));
+                    r.setCharge(m.addCharge(s.addCharge(r.getCharge())));
 
-            receiver.setData(r);
-            receiver.update();
+                    m.setCharge(s.addCharge(m.getCharge()));
 
-            sender.setData(s);
-            sender.update();
+                    receiver.setData(r);
+                    receiver.update();
 
-            b.setData(m);
-            b.update();
+                    sender.setData(s);
+                    sender.update();
+
+                    b.setData(m);
+                    b.update();
+                } else {
+                    ModBlock receiver = receivers.get(0);
+
+                    EnergyHolderBlockData r = (EnergyHolderBlockData) receiver.getData();
+                    EnergyHolderBlockData m = (EnergyHolderBlockData) b.getData();
+
+                    r.setCharge(m.addCharge(r.getCharge()));
+
+                    receiver.setData(r);
+                    receiver.update();
+
+                    b.setData(m);
+                    b.update();
+                }
+            } else {
+                if(senders.size() == 1) {
+                    ModBlock sender = senders.get(0);
+                    EnergyHolderBlockData s = (EnergyHolderBlockData) sender.getData();
+                    EnergyHolderBlockData m = (EnergyHolderBlockData) b.getData();
+
+                    m.setCharge(s.addCharge(m.getCharge()));
+
+                    sender.setData(s);
+                    sender.update();
+
+                    b.setData(m);
+                    b.update();
+                }
+            }
         }
     }
 }

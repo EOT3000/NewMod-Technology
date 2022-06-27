@@ -20,7 +20,10 @@ import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.util.Vector;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class EnergySenderItem extends ModItemType {
     public EnergySenderItem() {
@@ -67,24 +70,71 @@ public class EnergySenderItem extends ModItemType {
             List<ModBlock> wires = BlockUtils.getAllBlocks((x) -> x.equals(TechnologyAddonSetup.THIN_CABLE.getBlock())
                     , event.getBlock().getLocation(), false);
 
+            List<ModBlock> receivers = new ArrayList<>();
+
+            ModBlock b = event.getModBlock();
+            EnergyHolderBlockData sdata = (EnergyHolderBlockData) b.getData();
+
             for(ModBlock wire : wires) {
                 ModBlock end = end(event.getBlock().getLocation(), wire.create(null).getLocation(), 25);
 
                 if(end.getType() instanceof EnergyComponent && ((EnergyComponent) end.getType()).getType().equals(EnergyComponent.EnergyComponentType.RECEIVER)) {
-                    ModBlock b = event.getModBlock();
-
                     EnergyHolderBlockData data = (EnergyHolderBlockData) end.getData();
-                    EnergyHolderBlockData sdata = (EnergyHolderBlockData) b.getData();
 
-                    sdata.setCharge(data.addCharge(sdata.getCharge()));
-
-                    end.setData(data);
-                    end.update();
-
-                    b.setData(sdata);
-                    b.update();
+                    if(data.getCapacity()-data.getCharge() > 0) {
+                        receivers.add(end);
+                    }
                 }
             }
+
+            receivers.addAll(BlockUtils.getAllBlocks((x) -> x.equals(TechnologyAddonSetup.ENERGY_RECEIVER.getBlock())
+                    , event.getBlock().getLocation(), false));
+
+            int each = sdata.getCharge()/receivers.size();
+
+            List<ModBlock> nreceivers = new ArrayList<>();
+
+            for(ModBlock receiver : receivers) {
+                /*ModBlock b = event.getModBlock();
+
+                EnergyHolderBlockData data = (EnergyHolderBlockData) receiver.getData();
+                EnergyHolderBlockData sdata = (EnergyHolderBlockData) b.getData();
+
+                sdata.setCharge(data.addCharge(sdata.getCharge()));
+
+                receiver.setData(data);
+                receiver.update();
+
+                b.setData(sdata);
+                b.update();*/
+
+                EnergyHolderBlockData data = (EnergyHolderBlockData) receiver.getData();
+
+                int r = data.getCapacity()-data.getCharge();
+
+                if(r <= each) {
+                    sdata.setCharge(data.addCharge(sdata.getCharge()));
+                } else {
+                    nreceivers.add(receiver);
+                }
+
+                receiver.setData(data);
+                receiver.update();
+            }
+
+            each = sdata.getCharge()/nreceivers.size();
+
+            for(ModBlock receiver : nreceivers) {
+                EnergyHolderBlockData data = (EnergyHolderBlockData) receiver.getData();
+
+                sdata.removeCharge(each-data.addCharge(each));
+
+                receiver.setData(data);
+                receiver.update();
+            }
+
+            b.setData(sdata);
+            b.update();
         }
 
         private ModBlock end(Location node, Location wire, int length) {
