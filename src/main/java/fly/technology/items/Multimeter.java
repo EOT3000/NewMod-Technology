@@ -9,6 +9,7 @@ import fly.technology.TechnologyPlugin;
 import fly.technology.blocks.EnergyComponent;
 import fly.technology.blocks.data.EnergyHolderBlockData;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -33,15 +34,21 @@ public class Multimeter extends ModItemType {
                 if(block.getType() instanceof EnergyComponent) {
                     EnergyHolderBlockData data = (EnergyHolderBlockData) block.getData();
 
-                    int bars = (int)((data.getCharge()*1.0)/data.getCapacity())*10;
+                    int bars = (data.getCharge()*10)/(data.getCapacity());
 
                     // A fucking mess but it works (I hope)
+                    // UPDATE: it didn't
 
                     event.getPlayer().sendMessage("");
                     event.getPlayer().sendMessage(block.getType().getItem().getCustomName());
                     event.getPlayer().sendMessage(Component.text("Type: ").color(TextColor.color(0x00D5FF)).append(Component.text(((EnergyComponent) block.getType()).getType().toString()).color(TextColor.color(0x00A0C0))));
                     event.getPlayer().sendMessage(Component.text("Capacity: ").color(TextColor.color(0x00A0C0)).append(Component.text(data.getCapacity()).color(TextColor.color(0x00D5FF))));
-                    event.getPlayer().sendMessage(Component.text("Charge: ").color(TextColor.color(0x00D5FF)).append(Component.text(p(bars)).color(TextColor.color(0x00FF00)).append(Component.text(p(10-bars)).color(TextColor.color(0xFFC000)))));
+
+                    TextComponent name = Component.text("Charge: ").color(TextColor.color(0x00D5FF));
+                    TextComponent filled = Component.text(p(bars)).color(TextColor.color(0x00FF00));
+                    TextComponent remaining = Component.text(p(10-bars)).color(TextColor.color(0xFFC000));
+
+                    event.getPlayer().sendMessage(name.append(filled).append(remaining));
                 }
             }
         }

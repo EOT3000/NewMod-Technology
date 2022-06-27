@@ -5,14 +5,17 @@ import fly.newmod.api.block.ModBlock;
 import fly.newmod.api.block.type.ModBlockType;
 import fly.newmod.api.event.BlockEventsListener;
 import fly.newmod.api.event.block.ModBlockTickEvent;
-import fly.newmod.api.item.ItemManager;
+import fly.newmod.api.item.ModItemStack;
 import fly.newmod.api.item.type.ModItemType;
 import fly.newmod.utils.BlockUtils;
 import fly.technology.TechnologyPlugin;
 import fly.technology.blocks.data.EnergyHolderBlockData;
 import fly.technology.blocks.data.EnergyHolderBlockDataImpl;
+import fly.technology.setup.TechnologyAddonSetup;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ShapedRecipe;
 
 public class EnergyManagerItem extends ModItemType {
     public EnergyManagerItem() {
@@ -24,6 +27,17 @@ public class EnergyManagerItem extends ModItemType {
 
         NewMod.get().getItemManager().registerItem(this);
         NewMod.get().getBlockManager().registerBlock(getBlock());
+
+        ShapedRecipe recipe = new ShapedRecipe(getId(), new ModItemStack(this).create());
+
+        recipe.shape("RCR", "CWC", "ROR");
+
+        recipe.setIngredient('R', Material.REDSTONE);
+        recipe.setIngredient('C', new ModItemStack(TechnologyAddonSetup.THIN_CABLE).create());
+        recipe.setIngredient('W', Material.REDSTONE_LAMP);
+        recipe.setIngredient('O', Material.COPPER_INGOT);
+
+        Bukkit.addRecipe(recipe);
     }
 
     public static class EnergyManagerBlock extends ModBlockType implements EnergyComponent {
@@ -38,7 +52,7 @@ public class EnergyManagerItem extends ModItemType {
 
         @Override
         public int getCapacity() {
-            return 50;
+            return 400;
         }
     }
 
@@ -60,6 +74,8 @@ public class EnergyManagerItem extends ModItemType {
             EnergyHolderBlockData m = (EnergyHolderBlockData) b.getData();
 
             r.setCharge(m.addCharge(s.addCharge(r.getCharge())));
+
+            m.setCharge(s.addCharge(m.getCharge()));
 
             receiver.setData(r);
             receiver.update();

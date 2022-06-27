@@ -6,15 +6,18 @@ import fly.newmod.api.block.ModBlock;
 import fly.newmod.api.block.type.ModBlockType;
 import fly.newmod.api.event.BlockEventsListener;
 import fly.newmod.api.event.block.ModBlockTickEvent;
+import fly.newmod.api.item.ModItemStack;
 import fly.newmod.api.item.type.ModItemType;
 import fly.newmod.utils.BlockUtils;
 import fly.technology.TechnologyPlugin;
 import fly.technology.blocks.data.EnergyHolderBlockData;
 import fly.technology.blocks.data.EnergyHolderBlockDataImpl;
 import fly.technology.setup.TechnologyAddonSetup;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.util.Vector;
 
 import java.util.List;
@@ -29,6 +32,17 @@ public class EnergySenderItem extends ModItemType {
 
         NewMod.get().getItemManager().registerItem(this);
         NewMod.get().getBlockManager().registerBlock(getBlock());
+
+        ShapedRecipe recipe = new ShapedRecipe(getId(), new ModItemStack(this).create());
+
+        recipe.shape("RCR", "CWC", "ROR");
+
+        recipe.setIngredient('R', Material.REDSTONE);
+        recipe.setIngredient('C', new ModItemStack(TechnologyAddonSetup.THIN_CABLE).create());
+        recipe.setIngredient('W', Material.WHITE_WOOL);
+        recipe.setIngredient('O', Material.COPPER_INGOT);
+
+        Bukkit.addRecipe(recipe);
     }
 
     public static class EnergySenderBlock extends ModBlockType implements EnergyComponent {
@@ -43,7 +57,7 @@ public class EnergySenderItem extends ModItemType {
 
         @Override
         public int getCapacity() {
-            return 50;
+            return 400;
         }
     }
 
@@ -54,7 +68,7 @@ public class EnergySenderItem extends ModItemType {
                     , event.getBlock().getLocation(), false);
 
             for(ModBlock wire : wires) {
-                ModBlock end = end(event.getBlock().getLocation(), wire.create(null).getLocation(), 5);
+                ModBlock end = end(event.getBlock().getLocation(), wire.create(null).getLocation(), 25);
 
                 if(end.getType() instanceof EnergyComponent && ((EnergyComponent) end.getType()).getType().equals(EnergyComponent.EnergyComponentType.RECEIVER)) {
                     ModBlock b = event.getModBlock();

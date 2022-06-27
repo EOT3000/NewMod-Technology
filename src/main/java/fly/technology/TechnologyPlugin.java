@@ -1,8 +1,12 @@
 package fly.technology;
 
+import fly.metals.MetalsPlugin;
 import fly.newmod.NewMod;
 import fly.technology.blocks.data.EnergyHolderBlockDataImpl;
 import fly.technology.setup.TechnologyAddonSetup;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class TechnologyPlugin extends NewMod.ModExtension {
     private static TechnologyPlugin INSTANCE = null;
@@ -20,5 +24,14 @@ public class TechnologyPlugin extends NewMod.ModExtension {
         TechnologyAddonSetup.init();
 
         new EnergyHolderBlockDataImpl.EnergyHoldBlockDataSerializer();
+    }
+
+    @Override
+    public List<NewMod.ModExtension> requirements() {
+        List<NewMod.ModExtension> r = new ArrayList<>();
+
+        r.add(MetalsPlugin.get());
+
+        return r;
     }
 }
