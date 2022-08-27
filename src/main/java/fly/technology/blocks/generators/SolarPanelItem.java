@@ -17,7 +17,7 @@ public class SolarPanelItem extends EnergyGeneratorItem {
 
             @Override
             public int getMaxGeneration() {
-                return 10;
+                return 8;
             }
 
             @Override
@@ -27,7 +27,7 @@ public class SolarPanelItem extends EnergyGeneratorItem {
 
             @Override
             public int getCapacity() {
-                return 280;
+                return 240;
             }
         });
 

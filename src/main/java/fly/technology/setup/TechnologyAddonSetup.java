@@ -2,12 +2,12 @@ package fly.technology.setup;
 
 import fly.newmod.api.item.type.ModItemType;
 import fly.technology.TechnologyPlugin;
-import fly.technology.blocks.EnergyManagerItem;
-import fly.technology.blocks.EnergyReceiverItem;
-import fly.technology.blocks.EnergySenderItem;
-import fly.technology.blocks.ThinCableItem;
+import fly.technology.blocks.*;
+import fly.technology.blocks.consumer.QuickFurnaceItem;
 import fly.technology.blocks.generators.SolarPanelItem;
+import fly.technology.items.BeheadingSword;
 import fly.technology.items.Multimeter;
+import fly.technology.items.Pan;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -20,6 +20,8 @@ import static fly.metals.setup.MetalsAddonSetup.*;
 public class TechnologyAddonSetup {
     public static void init() {
         Bukkit.addRecipe(new BlastingRecipe(new NamespacedKey(TechnologyPlugin.get(), "photovoltaic_brick"), PHOTOVOLTAIC_BRICK.create(), new RecipeChoice.ExactChoice(PHOTOVOLTAIC_POWDER.create()), 1.5f, 400));
+
+        new BlockPlacer();
     }
 
     public static final ModItemType PHOTOVOLTAIC_POWDER = ModItemType.createAndRegister(Material.REDSTONE, TechnologyPlugin.get(), "photovoltaic_powder", "Photovoltaic Powder", 0xD08070)
@@ -34,5 +36,10 @@ public class TechnologyAddonSetup {
 
     public static final SolarPanelItem SOLAR_PANEL = new SolarPanelItem();
 
+    public static final QuickFurnaceItem QUICK_FURNACE = new QuickFurnaceItem();
+
     public static final Multimeter MULTIMETER = new Multimeter();
+    public static final Pan PAN = new Pan();
+
+    //public static final PoweredMinecart POWERED_MINECART = new PoweredMinecart();
 }

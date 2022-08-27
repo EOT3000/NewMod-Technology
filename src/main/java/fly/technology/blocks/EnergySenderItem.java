@@ -76,7 +76,7 @@ public class EnergySenderItem extends ModItemType {
             EnergyHolderBlockData sdata = (EnergyHolderBlockData) b.getData();
 
             for(ModBlock wire : wires) {
-                ModBlock end = end(event.getBlock().getLocation(), wire.create(null).getLocation(), 25);
+                ModBlock end = end(event.getBlock().getLocation(), wire.create(null).getLocation(), 50);
 
                 if(end.getType() instanceof EnergyComponent && ((EnergyComponent) end.getType()).getType().equals(EnergyComponent.EnergyComponentType.RECEIVER)) {
                     EnergyHolderBlockData data = (EnergyHolderBlockData) end.getData();
@@ -89,6 +89,19 @@ public class EnergySenderItem extends ModItemType {
 
             receivers.addAll(BlockUtils.getAllBlocks((x) -> x.equals(TechnologyAddonSetup.ENERGY_RECEIVER.getBlock())
                     , event.getBlock().getLocation(), false));
+
+            receivers.addAll(BlockUtils.getAllBlocks((x) -> {
+                        if(x instanceof EnergyComponent) {
+                            return ((EnergyComponent) x).getType().equals(EnergyComponent.EnergyComponentType.CONSUMER);
+                        }
+
+                        return false;
+                    }
+                    , event.getBlock().getLocation(), false));
+
+            if(receivers.size() == 0) {
+                return;
+            }
 
             int each = sdata.getCharge()/receivers.size();
 
@@ -120,6 +133,10 @@ public class EnergySenderItem extends ModItemType {
 
                 receiver.setData(data);
                 receiver.update();
+            }
+
+            if(nreceivers.size() == 0) {
+                return;
             }
 
             each = sdata.getCharge()/nreceivers.size();
