@@ -11,6 +11,7 @@ public interface EnergyComponent {
         CONSUMER,
         PRODUCER,
         STORAGE,
-        MANAGER
+        MANAGER,
+        SENDER_RECEIVER
     }
 }

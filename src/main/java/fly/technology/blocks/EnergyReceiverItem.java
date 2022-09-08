@@ -47,7 +47,7 @@ public class EnergyReceiverItem extends ModItemType {
 
         @Override
         public int getCapacity() {
-            return 400;
+            return 1800;
         }
     }
 }

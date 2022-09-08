@@ -54,7 +54,7 @@ public class EnergyManagerItem extends ModItemType {
 
         @Override
         public int getCapacity() {
-            return 320;
+            return 1400;
         }
     }
 

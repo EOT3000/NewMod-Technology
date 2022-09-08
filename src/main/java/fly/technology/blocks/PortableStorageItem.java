@@ -5,11 +5,11 @@ import fly.newmod.api.block.BlockManager;
 import fly.newmod.api.block.ModBlock;
 import fly.newmod.api.block.type.ModBlockType;
 import fly.newmod.api.event.BlockEventsListener;
+import fly.newmod.api.event.block.ModBlockBreakEvent;
 import fly.newmod.api.event.block.ModBlockTickEvent;
 import fly.newmod.api.item.ModItemStack;
 import fly.newmod.api.item.type.ModItemType;
 import fly.newmod.utils.BlockUtils;
-import fly.newmod.utils.Pair;
 import fly.technology.TechnologyPlugin;
 import fly.technology.blocks.data.EnergyHolderBlockData;
 import fly.technology.blocks.data.EnergyHolderBlockDataImpl;
@@ -18,28 +18,27 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.ShapedRecipe;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-public class EnergySenderItem extends ModItemType {
-    public EnergySenderItem() {
-        super(Material.TARGET, new NamespacedKey(TechnologyPlugin.get(), "energy_sender"));
+public class PortableStorageItem extends ModItemType {
+    public PortableStorageItem() {
+        super(Material.TARGET, new NamespacedKey(TechnologyPlugin.get(), "portable_storage"));
 
-        name("Energy Sender", 0xFF8060);
+        name("Portable Energy Storage", 0xFF8060);
 
-        setBlock(new EnergySenderBlock().setListener(new EnergySenderListener()));
+        setBlock(new PortableStorageBlock().setListener(new PortableStorageListener()));
 
         NewMod.get().getItemManager().registerItem(this);
         NewMod.get().getBlockManager().registerBlock(getBlock());
 
         ShapedRecipe recipe = new ShapedRecipe(getId(), new ModItemStack(this).create());
 
-        recipe.shape("RCR", "CWC", "ROR");
+        recipe.shape("RRR", "RRR", "WCO");
 
         recipe.setIngredient('R', Material.REDSTONE);
         recipe.setIngredient('C', new ModItemStack(TechnologyAddonSetup.THIN_CABLE).create());
@@ -49,23 +48,28 @@ public class EnergySenderItem extends ModItemType {
         Bukkit.addRecipe(recipe);
     }
 
-    public static class EnergySenderBlock extends ModBlockType implements EnergyComponent {
-        public EnergySenderBlock() {
-            super(Material.TARGET, new NamespacedKey(TechnologyPlugin.get(), "energy_sender"), EnergyHolderBlockDataImpl.class);
+    public static class PortableStorageBlock extends ModBlockType implements EnergyComponent {
+        public PortableStorageBlock() {
+            super(Material.TARGET, new NamespacedKey(TechnologyPlugin.get(), "portable_storage"), EnergyHolderBlockDataImpl.class);
         }
 
         @Override
         public EnergyComponentType getType() {
-            return EnergyComponentType.SENDER;
+            return EnergyComponentType.SENDER_RECEIVER;
         }
 
         @Override
         public int getCapacity() {
-            return 1800;
+            return 120000;
+        }
+
+        @Override
+        public ItemStack getDropStack(ModBlockBreakEvent ne) {
+            return super.getDropStack(ne);
         }
     }
 
-    public static class EnergySenderListener implements BlockEventsListener {
+    public static class PortableStorageListener implements BlockEventsListener {
         @Override
         public void onBlockTick(ModBlockTickEvent event) {
             //System.out.println("sender ---------------");
@@ -96,15 +100,6 @@ public class EnergySenderItem extends ModItemType {
             receivers.addAll(BlockUtils.getAllBlocks((x) -> {
                         if(x instanceof EnergyComponent) {
                             return ((EnergyComponent) x).getType().equals(EnergyComponent.EnergyComponentType.CONSUMER);
-                        }
-
-                        return false;
-                    }
-                    , event.getBlock().getLocation(), false));
-
-            receivers.addAll(BlockUtils.getAllBlocks((x) -> {
-                        if(x instanceof EnergyComponent) {
-                            return ((EnergyComponent) x).getType().equals(EnergyComponent.EnergyComponentType.SENDER_RECEIVER);
                         }
 
                         return false;
@@ -171,6 +166,11 @@ public class EnergySenderItem extends ModItemType {
             //System.out.println(b.getData());
 
             //System.out.println("---------------");
+        }
+
+        @Override
+        public void onBlockBreakMonitor(ModBlockBreakEvent event) {
+            BlockEventsListener.super.onBlockBreakMonitor(event);
         }
 
         private ModBlock end(Location node, Location wire, int length) {

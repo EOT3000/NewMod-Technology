@@ -1,18 +1,23 @@
 package fly.technology.items;
 
+import fly.metals.setup.MetalsAddonSetup;
 import fly.newmod.NewMod;
 import fly.newmod.api.block.ModBlock;
 import fly.newmod.api.event.ItemEventsListener;
 import fly.newmod.api.event.both.ModBlockItemUseEvent;
+import fly.newmod.api.item.ModItemStack;
 import fly.newmod.api.item.type.ModItemType;
 import fly.technology.TechnologyPlugin;
 import fly.technology.blocks.EnergyComponent;
 import fly.technology.blocks.data.EnergyHolderBlockData;
+import fly.technology.setup.TechnologyAddonSetup;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
+import org.bukkit.inventory.ShapedRecipe;
 
 public class Multimeter extends ModItemType {
     public Multimeter() {
@@ -23,6 +28,18 @@ public class Multimeter extends ModItemType {
         setListener(new MultimeterListener());
 
         NewMod.get().getItemManager().registerItem(this);
+
+        ShapedRecipe recipe = new ShapedRecipe(getId(), new ModItemStack(this).create());
+
+        recipe.shape(" C ", "GNG", "IRI");
+
+        recipe.setIngredient('C', Material.COPPER_INGOT);
+        recipe.setIngredient('G', Material.GOLD_INGOT);
+        recipe.setIngredient('N', new ModItemStack(MetalsAddonSetup.NEODYMIUM_NUGGET).create());
+        recipe.setIngredient('I', Material.IRON_NUGGET);
+        recipe.setIngredient('R', Material.REDSTONE);
+
+        Bukkit.addRecipe(recipe);
     }
 
     public static class MultimeterListener implements ItemEventsListener {
@@ -48,7 +65,7 @@ public class Multimeter extends ModItemType {
                     TextComponent filled = Component.text(p(bars)).color(TextColor.color(0x00FF00));
                     TextComponent remaining = Component.text(p(10-bars)).color(TextColor.color(0xFFC000));
 
-                    event.getPlayer().sendMessage(name.append(filled).append(remaining));
+                    event.getPlayer().sendMessage(name.append(filled).append(Component.text(" ")).append(remaining));
                 }
             }
         }

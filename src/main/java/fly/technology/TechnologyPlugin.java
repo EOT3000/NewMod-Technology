@@ -4,6 +4,7 @@ import fly.metals.MetalsPlugin;
 import fly.newmod.NewMod;
 import fly.technology.blocks.data.EnergyHolderBlockDataImpl;
 import fly.technology.items.BeheadingSword;
+import fly.technology.items.meta.PortableStorageItemMetaImpl;
 import fly.technology.setup.TechnologyAddonSetup;
 import org.bukkit.Bukkit;
 
@@ -35,6 +36,7 @@ public class TechnologyPlugin extends NewMod.ModExtension {
         TechnologyAddonSetup.init();
 
         new EnergyHolderBlockDataImpl.EnergyHoldBlockDataSerializer();
+        new PortableStorageItemMetaImpl.PortableStorageItemMetaSerializer();
     }
 
     @Override
