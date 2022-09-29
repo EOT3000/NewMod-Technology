@@ -5,6 +5,7 @@ import fly.newmod.NewMod;
 import fly.technology.blocks.data.EnergyHolderBlockDataImpl;
 import fly.technology.items.BeheadingSword;
 import fly.technology.items.meta.PortableStorageItemMetaImpl;
+import fly.technology.listeners.DebugListener;
 import fly.technology.setup.TechnologyAddonSetup;
 import org.bukkit.Bukkit;
 
@@ -26,9 +27,7 @@ public class TechnologyPlugin extends NewMod.ModExtension {
     public void onEnable() {
         new BeheadingSword();
 
-        System.out.println("onebabel");
-
-        //Bukkit.getPluginManager().registerEvents(TechnologyAddonSetup.POWERED_MINECART, this);
+        Bukkit.getPluginManager().registerEvents(new DebugListener(), this);
     }
 
     @Override

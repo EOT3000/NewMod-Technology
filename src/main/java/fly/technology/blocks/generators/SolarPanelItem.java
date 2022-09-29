@@ -17,12 +17,12 @@ public class SolarPanelItem extends EnergyGeneratorItem {
 
             @Override
             public int getMaxGeneration() {
-                return 8;
+                return 12;
             }
 
             @Override
             public int getCurrentGeneration(Location location) {
-                return location.getWorld().isDayTime() ? random.nextInt(4)+4 : 1;
+                return location.getWorld().isDayTime() ? random.nextInt(3)+10 : 1;
             }
 
             @Override

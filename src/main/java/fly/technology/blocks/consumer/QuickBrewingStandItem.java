@@ -33,9 +33,9 @@ public class QuickBrewingStandItem extends EnergyConsumerItem {
 
     public static class QuickBrewingStandBlock extends EnergyConsumerBlock {
         public QuickBrewingStandBlock() {
-            super(Material.BREWING_STAND, "quick_furnace");
+            super(Material.BREWING_STAND, "quick_brewing_stand");
 
-            setListener(new BlockEventsListener() {
+            {/*setListener(new BlockEventsListener() {
                 @Override
                 public void onBlockTick(ModBlockTickEvent event) {
                     //System.out.println("user ---------------");
@@ -74,7 +74,25 @@ public class QuickBrewingStandItem extends EnergyConsumerItem {
 
                     //System.out.println("---------------");
                 }
-            });
+            });*/}
+        }
+
+        @Override
+        public boolean doTick(ModBlockTickEvent event, double percent) {
+            BrewingStand stand = (BrewingStand) event.getBlock().getState();
+
+            if (stand.getBrewingTime() <= 0) {
+                return false;
+            }
+
+            //if a lot of charge, then more likely to skip one tick, making it faster
+            if (event.getTick() % 42 < percent*42) {
+                stand.setBrewingTime(stand.getBrewingTime()-1);
+            }
+
+            stand.update();
+
+            return true;
         }
 
         @Override

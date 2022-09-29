@@ -1,40 +1,29 @@
 package fly.technology.blocks.consumer;
 
-import fly.metals.setup.MetalsAddonSetup;
 import fly.newmod.api.block.ModBlock;
-import fly.newmod.api.event.BlockEventsListener;
 import fly.newmod.api.event.block.ModBlockTickEvent;
-import fly.technology.blocks.data.EnergyHolderBlockData;
-import fly.technology.setup.TechnologyAddonSetup;
-import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Furnace;
-import org.bukkit.inventory.ShapedRecipe;
 
-public class QuickFurnaceItem extends EnergyConsumerItem {
-    public QuickFurnaceItem() {
-        super(Material.FURNACE, "quick_furnace", "Quick Furnace", 0x808080, new QuickFurnaceBlock());
-
-        ShapedRecipe recipe = new ShapedRecipe(getId(), this.create());
-
-        recipe.shape("NNN", "TFM", "IRI");
-
-        recipe.setIngredient('N', MetalsAddonSetup.COPPER_NUGGET.create());
-        recipe.setIngredient('T', TechnologyAddonSetup.THIN_CABLE.create());
-        recipe.setIngredient('F', Material.FURNACE);
-        recipe.setIngredient('M', TechnologyAddonSetup.MULTIMETER.create());
-        recipe.setIngredient('I', MetalsAddonSetup.TITANIUM_INGOT.create());
-        recipe.setIngredient('R', Material.REDSTONE);
-
-        Bukkit.addRecipe(recipe);
+public class PoweredFurnaceItem extends EnergyConsumerItem {
+    public PoweredFurnaceItem(Material material, String id, String name, int color, int capacity, int maxUsage, float maxIncrease) {
+        super(material, id, name, color, new PoweredFurnaceBlock(material, id, capacity, maxUsage, maxIncrease));
     }
 
-    public static class QuickFurnaceBlock extends EnergyConsumerBlock {
-        public QuickFurnaceBlock() {
-            super(Material.FURNACE, "quick_furnace");
+    public static class PoweredFurnaceBlock extends EnergyConsumerBlock {
+        private final int capacity;
+        private final int maxUsage;
+        private final float maxIncrease;
 
-            setListener(new BlockEventsListener() {
+        public PoweredFurnaceBlock(Material material, String id, int capacity, int maxUsage, float maxIncrease) {
+            super(material, id);
+
+            this.capacity = capacity;
+            this.maxUsage = maxUsage;
+            this.maxIncrease = maxIncrease;
+
+            {/*setListener(new BlockEventsListener() {
                 @Override
                 public void onBlockTick(ModBlockTickEvent event) {
                     //System.out.println("user ---------------");
@@ -71,22 +60,37 @@ public class QuickFurnaceItem extends EnergyConsumerItem {
 
                     //System.out.println("---------------");
                 }
-            });
+            });*/}
         }
 
         @Override
         public int getCapacity() {
-            return 1680;
+            return capacity;
         }
 
         @Override
         public int getMaxUsage() {
-            return 24;
+            return maxUsage;
         }
 
         @Override
         public int getCurrentUsage(Block block, ModBlock modBlock) {
-            return 24;
+            return maxUsage;
+        }
+
+        @Override
+        public boolean doTick(ModBlockTickEvent event, double percent) {
+            Furnace furnace = (Furnace) event.getBlock().getState();
+
+            if(furnace.getBurnTime() <= 0) {
+                return false;
+            }
+
+            furnace.setCookSpeedMultiplier(percent*maxIncrease);
+
+            furnace.update();
+
+            return true;
         }
     }
 }

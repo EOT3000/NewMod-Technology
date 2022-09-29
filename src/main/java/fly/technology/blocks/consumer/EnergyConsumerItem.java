@@ -32,6 +32,31 @@ public class EnergyConsumerItem extends ModItemType {
     public static abstract class EnergyConsumerBlock extends ModBlockType implements EnergyComponent {
         public EnergyConsumerBlock(Material material, String id) {
             super(material, new NamespacedKey(TechnologyPlugin.get(), id), EnergyHolderBlockDataImpl.class);
+
+            setListener(new BlockEventsListener() {
+                @Override
+                public void onBlockTick(ModBlockTickEvent event) {
+                    ModBlock block = event.getModBlock();
+
+                    EnergyHolderBlockData data = (EnergyHolderBlockData) block.getData();
+
+                    EnergyConsumerBlock type = ((EnergyConsumerBlock) data.getType());
+
+                    int c = data.getCharge();
+                    int t = Math.min(c, type.getMaxUsage());
+
+                    boolean ret = doTick(event, (type.getMaxUsage()*1.0)/t);
+
+                    if(!ret) {
+                        return;
+                    }
+
+                    data.setCharge(c - t);
+
+                    block.setData(data);
+                    block.update();
+                }
+            });
         }
 
         @Override
@@ -39,15 +64,10 @@ public class EnergyConsumerItem extends ModItemType {
             return EnergyComponentType.CONSUMER;
         }
 
+        public abstract boolean doTick(ModBlockTickEvent event, double percent);
+
         public abstract int getMaxUsage();
 
         public abstract int getCurrentUsage(Block block, ModBlock modBlock);
-    }
-
-    public static class EnergyConsumerListener implements BlockEventsListener {
-        @Override
-        public void onBlockTick(ModBlockTickEvent event) {
-
-        }
     }
 }
