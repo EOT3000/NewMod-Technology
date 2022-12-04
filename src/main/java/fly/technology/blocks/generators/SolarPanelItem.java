@@ -29,6 +29,11 @@ public class SolarPanelItem extends EnergyGeneratorItem {
             public int getCapacity() {
                 return 240;
             }
+
+            //@Override
+            public int energyHalfLife() {
+                return 72000;
+            }
         });
 
         ShapedRecipe recipe = new ShapedRecipe(getId(), this.create());

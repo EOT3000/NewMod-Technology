@@ -109,5 +109,10 @@ public class QuickBrewingStandItem extends EnergyConsumerItem {
         public int getCurrentUsage(Block block, ModBlock modBlock) {
             return 42;
         }
+
+        //@Override
+        public int energyHalfLife() {
+            return 216000;
+        }
     }
 }

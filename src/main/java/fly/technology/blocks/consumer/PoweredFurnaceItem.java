@@ -92,5 +92,10 @@ public class PoweredFurnaceItem extends EnergyConsumerItem {
 
             return true;
         }
+
+        //@Override
+        public int energyHalfLife() {
+            return 360000;
+        }
     }
 }

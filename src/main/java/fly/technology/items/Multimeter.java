@@ -63,7 +63,7 @@ public class Multimeter extends ModItemType {
 
                     TextComponent name = Component.text("Charge: ").color(TextColor.color(0x00D5FF));
                     TextComponent filled = Component.text(p(bars)).color(TextColor.color(0x00FF00));
-                    TextComponent remaining = Component.text(p(10-bars)).color(TextColor.color(0xFFC000));
+                    TextComponent remaining = Component.text(q(10-bars)).color(TextColor.color(0xFFC000));
 
                     event.getPlayer().sendMessage(name.append(filled).append(Component.text(" ")).append(remaining));
                 }
@@ -71,7 +71,11 @@ public class Multimeter extends ModItemType {
         }
 
         private String p(int count) {
-            return "|".repeat(Math.max(0, count));
+            return "#".repeat(Math.max(0, count));
+        }
+
+        private String q(int count) {
+            return "+".repeat(Math.max(0, count));
         }
     }
 }

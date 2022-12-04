@@ -5,6 +5,8 @@ public interface EnergyComponent {
 
     int getCapacity();
 
+
+
     enum EnergyComponentType {
         SENDER,
         RECEIVER,

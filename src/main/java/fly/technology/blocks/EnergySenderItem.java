@@ -63,6 +63,11 @@ public class EnergySenderItem extends ModItemType {
         public int getCapacity() {
             return 1800;
         }
+
+        //@Override
+        public int energyHalfLife() {
+            return 0;
+        }
     }
 
     public static class EnergySenderListener implements BlockEventsListener {
